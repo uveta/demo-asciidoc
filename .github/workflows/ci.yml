@@ -1,0 +1,33 @@
+name: Continuos Integration
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Asciidoctor
+        run: |
+          gem install asciidoctor
+          gem install asciidoctor-diagram
+          asciidoctor --version
+      
+      - name: Generate HTML document
+        run: |          
+          asciidoctor -D output src/my-document.adoc
+
+      - name: Publish HTML document artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation
+          path: output
