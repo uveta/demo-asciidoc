@@ -18,13 +18,14 @@ jobs:
 
       - name: Install Asciidoctor
         run: |
-          gem install asciidoctor
-          gem install asciidoctor-diagram
-          asciidoctor --version
+          cd src
+          bundle
+          bundle exec asciidoctor --version
       
       - name: Generate HTML document
-        run: |          
-          asciidoctor -D output src/my-document.adoc
+        run: |
+          cd src
+          bundle exec asciidoctor -D ../output my-document.adoc
 
       - name: Publish HTML document artifact
         uses: actions/upload-artifact@v3
