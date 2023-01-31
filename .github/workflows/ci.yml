@@ -49,13 +49,13 @@ jobs:
       - name: Publish HTML document artifact
         uses: actions/upload-artifact@v3
         with:
-          name: documentation
+          name: documentation-html
           path: ${{env.output-directory}}/html
           if-no-files-found: error
 
       - name: Publish PDF document artifact
         uses: actions/upload-artifact@v3
         with:
-          name: documentation
+          name: documentation-pdf
           path: ${{env.output-directory}}/pdf
           if-no-files-found: error
