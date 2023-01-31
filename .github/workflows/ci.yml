@@ -6,7 +6,7 @@ on:
   pull_request:
     branches:
       - main
-  
+
   workflow_dispatch:
 
 jobs:
@@ -14,14 +14,16 @@ jobs:
     runs-on: ubuntu-latest
     env:
       working-directory: ./src
-      output-directory: ./output
+      output-directory: $GITHUB_WORKSPACE/output
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - uses: ruby/setup-ruby@v1
+      - name: Setup Ruby 3.2
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.0'
+          ruby-version: '3.2'
           working-directory: ${{env.working-directory}}
           bundler-cache: true
 
@@ -33,14 +35,27 @@ jobs:
       - name: Setup Graphviz
         run: |
           sudo apt-get install graphviz
-      
+
       - name: Generate HTML document
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}} *.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -D ${{env.output-directory}}/html *.adoc
+        working-directory: ${{env.working-directory}}
+
+      - name: Generate PDF document
+        run: |
+          bundle exec asciidoctor -r asciidoctor-pdf -r asciidoctor-diagram -b pdf -D ${{env.output-directory}}/pdf *.adoc
         working-directory: ${{env.working-directory}}
 
       - name: Publish HTML document artifact
         uses: actions/upload-artifact@v3
         with:
           name: documentation
-          path: ${{env.output-directory}}
+          path: ${{env.output-directory}}/html
+          if-no-files-found: error
+
+      - name: Publish PDF document artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation
+          path: ${{env.output-directory}}/pdf
+          if-no-files-found: error
