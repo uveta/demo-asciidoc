@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       working-directory: ./src
-      output-directory: $GITHUB_WORKSPACE/output
+      output-directory: ./output
 
     steps:
       - name: Checkout
@@ -38,12 +38,12 @@ jobs:
 
       - name: Generate HTML document
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -D ${{env.output-directory}}/html *.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}}/html *.adoc
         working-directory: ${{env.working-directory}}
 
       - name: Generate PDF document
         run: |
-          bundle exec asciidoctor -r asciidoctor-pdf -r asciidoctor-diagram -b pdf -D ${{env.output-directory}}/pdf *.adoc
+          bundle exec asciidoctor -r asciidoctor-pdf -r asciidoctor-diagram -b pdf -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf *.adoc
         working-directory: ${{env.working-directory}}
 
       - name: Publish HTML document artifact
