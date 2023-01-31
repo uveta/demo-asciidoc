@@ -12,6 +12,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./src
+      output-directory: ./output
 
     steps:
       - uses: actions/checkout@v3
@@ -19,13 +22,13 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.0'
-          working-directory: src
+          working-directory: ${{env.working-directory}}
           bundler-cache: true
 
       - name: Install Asciidoctor
         run: |
           bundle exec asciidoctor --version
-        working-directory: src
+        working-directory: ${{env.working-directory}}
 
       - name: Setup Graphviz
         run: |
@@ -33,11 +36,11 @@ jobs:
       
       - name: Generate HTML document
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -D ../output *.adoc
-        working-directory: src
+          bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}} *.adoc
+        working-directory: ${{env.working-directory}}
 
       - name: Publish HTML document artifact
         uses: actions/upload-artifact@v3
         with:
           name: documentation
-          path: output
+          path: ${{env.output-directory}}
