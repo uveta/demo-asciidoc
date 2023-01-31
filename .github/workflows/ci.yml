@@ -16,6 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: ruby/setup-ruby@v1
+
       - name: Install Asciidoctor
         run: |
           cd src
@@ -25,7 +27,7 @@ jobs:
       - name: Generate HTML document
         run: |
           cd src
-          bundle exec asciidoctor -D ../output my-document.adoc
+          bundle exec asciidoctor -D ../output *.adoc
 
       - name: Publish HTML document artifact
         uses: actions/upload-artifact@v3
