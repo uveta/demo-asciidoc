@@ -26,6 +26,11 @@ jobs:
         run: |
           bundle exec asciidoctor --version
         working-directory: src
+
+      - name: Setup Graphviz
+        # uses: ts-graphviz/setup-graphviz@v1
+        run: |
+          sudo apt install graphviz
       
       - name: Generate HTML document
         run: |
