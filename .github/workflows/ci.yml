@@ -19,17 +19,18 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.0'
+          working-directory: src
+          bundler-cache: true
 
       - name: Install Asciidoctor
         run: |
-          cd src
-          bundle
           bundle exec asciidoctor --version
+        working-directory: src
       
       - name: Generate HTML document
         run: |
-          cd src
-          bundle exec asciidoctor -D ../output *.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -D ../output *.adoc
+        working-directory: src
 
       - name: Publish HTML document artifact
         uses: actions/upload-artifact@v3
