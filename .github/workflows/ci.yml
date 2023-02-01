@@ -43,13 +43,23 @@ jobs:
         run: |
           sudo apt-get install graphviz
 
+      - name: Setup Pandoc
+        run: |
+          sudo apt-get install graphviz
+
       - name: Generate HTML document
         run: |
           bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}}/html *.adoc
 
       - name: Generate PDF document
         run: |
-          bundle exec asciidoctor -r asciidoctor-pdf -r asciidoctor-diagram -b pdf -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf *.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -r asciidoctor-pdf -b pdf -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf *.adoc
+
+      - name: Generate MS Word document
+        run: |
+          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/word *.adoc
+          cd $GITHUB_WORKSPACE/${{env.output-directory}}/word
+          for f in *.dbk; do pandoc --from docbook --to docx "$f" -s -o "${f%.dbk}.docx"; done
 
       - name: Publish HTML document artifact
         uses: actions/upload-artifact@v3
@@ -63,6 +73,13 @@ jobs:
         with:
           name: documentation-pdf
           path: ${{env.output-directory}}/pdf
+          if-no-files-found: error
+
+      - name: Publish MS Word document artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-word
+          path: ${{env.output-directory}}/word/**/*.docx
           if-no-files-found: error
 
       - name: Publish to GitHub pages
