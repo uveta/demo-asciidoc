@@ -45,7 +45,7 @@ jobs:
 
       - name: Setup Pandoc
         run: |
-          sudo apt-get install graphviz
+          sudo apt-get install pandoc
 
       - name: Generate HTML document
         run: |
