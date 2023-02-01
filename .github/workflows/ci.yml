@@ -35,17 +35,10 @@ jobs:
           working-directory: ${{env.working-directory}}
           bundler-cache: true
 
-      - name: Install Asciidoctor
+      - name: Setup Asciidoctor, Graphviz and Pandoc
         run: |
+          sudo apt-get install graphviz pandoc --no-install-recommends
           bundle exec asciidoctor --version
-
-      - name: Setup Graphviz
-        run: |
-          sudo apt-get install graphviz
-
-      - name: Setup Pandoc
-        run: |
-          sudo apt-get install pandoc
 
       - name: Generate HTML document
         run: |
