@@ -15,6 +15,14 @@ jobs:
     env:
       working-directory: ./src
       output-directory: ./output
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: src
 
     steps:
       - name: Checkout
@@ -30,7 +38,6 @@ jobs:
       - name: Install Asciidoctor
         run: |
           bundle exec asciidoctor --version
-        working-directory: ${{env.working-directory}}
 
       - name: Setup Graphviz
         run: |
@@ -39,12 +46,10 @@ jobs:
       - name: Generate HTML document
         run: |
           bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}}/html *.adoc
-        working-directory: ${{env.working-directory}}
 
       - name: Generate PDF document
         run: |
           bundle exec asciidoctor -r asciidoctor-pdf -r asciidoctor-diagram -b pdf -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf *.adoc
-        working-directory: ${{env.working-directory}}
 
       - name: Publish HTML document artifact
         uses: actions/upload-artifact@v3
@@ -59,3 +64,11 @@ jobs:
           name: documentation-pdf
           path: ${{env.output-directory}}/pdf
           if-no-files-found: error
+
+      - name: Publish to GitHub pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{env.output-directory}}/html
+          commit_message: ${{ github.event.head_commit.message }}
