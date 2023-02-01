@@ -59,7 +59,7 @@ jobs:
         run: |
           bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/word *.adoc
           cd $GITHUB_WORKSPACE/${{env.output-directory}}/word
-          for f in *.dbk; do pandoc --from docbook --to docx "$f" -s -o "${f%.dbk}.docx"; done
+          for f in *.xml; do pandoc --from docbook --to docx "$f" -s -o "${f%.xml}.docx"; done
 
       - name: Publish HTML document artifact
         uses: actions/upload-artifact@v3
