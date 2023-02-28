@@ -9,6 +9,10 @@ Wolpertingers.
 
 Wolpertingers are {url-wolpertinger}[ravenous beasts].
 
+== C4 Diagrams
+
+=== Context
+
 [plantuml, target=diagram-c4-context, format=svg]
 ....
 @startuml "enterprise"
@@ -22,6 +26,8 @@ Wolpertingers are {url-wolpertinger}[ravenous beasts].
 LAYOUT_TOP_DOWN()
 'LAYOUT_AS_SKETCH()
 LAYOUT_WITH_LEGEND()
+
+title Context diagram of Widgets Limited
 
 Person(customer, "Customer", "A customer of Widgets Limited.")
 
@@ -44,8 +50,9 @@ Rel_L(taxamo, braintree, "Uses for credit card processing")
 Lay_D(customer, braintree)
 
 @enduml
-
 ....
+
+=== Container
 
 [plantuml, target=diagram-c4-container, format=svg]
 ....
@@ -89,6 +96,8 @@ SHOW_LEGEND()
 @enduml
 ....
 
+=== Deployment
+
 [plantuml, target=diagram-c4-deployment, format=svg]
 ....
 @startuml
@@ -104,7 +113,6 @@ SetPropertyHeader("Property","Value", "Description")
 AddProperty("Prop1", "Value1", "Details1")
 AddProperty("Prop2", "Value2", "Details2")
 Deployment_Node_L(nodeAlias, "Label", "Optional Type", "Optional Description (with custom property header)") {
-
   WithoutPropertyHeader()
   AddProperty("PropC1", "ValueC1")
   AddProperty("PropC2", "ValueC2")

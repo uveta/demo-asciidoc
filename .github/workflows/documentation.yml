@@ -89,6 +89,17 @@ jobs:
             !${{env.output-directory}}/pdf/**/vendor
           if-no-files-found: error
 
+      - name: Publish Markdown documents artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-md
+          path: |
+            ${{env.output-directory}}/markdown
+            !${{env.output-directory}}/markdown/**/*.xml
+            !${{env.output-directory}}/markdown/**/.asciidoctor
+            !${{env.output-directory}}/markdown/**/vendor
+          if-no-files-found: error
+
       - name: Publish MS Word documents artifact
         uses: actions/upload-artifact@v3
         with:
@@ -106,11 +117,13 @@ jobs:
 
       - name: Checkout Wiki code
         uses: actions/checkout@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           repository: ${{github.repository}}.wiki
           path: wiki
 
       - name: Push to Wiki
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
