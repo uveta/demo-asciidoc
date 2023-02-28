@@ -102,10 +102,7 @@ jobs:
 
       - name: Push to Wiki
         run: |
-          cd ${{env.output-directory}}/markdown
-          cp **/*.md ../../wiki
-          cp **/*.svg ../../wiki
-          cd ../../wiki
+          cp -r ${{env.output-directory}}/markdown ./wiki
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
