@@ -1,0 +1,137 @@
+name: Documentation
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - doc/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - doc/**
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./doc
+      output-directory: ./output
+      commit-message: ${{ github.event.head_commit.message }}
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Get head git commit message
+        id: get_head_commit_message
+        run: echo "commit-message=$(git show -s --format=%s)" >> $GITHUB_ENV
+
+      - name: Setup Ruby 3.2
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          working-directory: ${{env.working-directory}}
+          bundler-cache: true
+
+      - name: Setup Asciidoctor, Graphviz and Pandoc
+        run: |
+          sudo apt-get install graphviz pandoc --no-install-recommends
+          bundle exec asciidoctor --version
+        working-directory: ${{env.working-directory}}
+
+      - name: Generate HTML documents
+        run: |
+          bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}}/html *.adoc
+        working-directory: ${{env.working-directory}}
+
+      - name: Generate PDF documents
+        run: |
+          bundle exec asciidoctor -r asciidoctor-diagram -r asciidoctor-pdf -b pdf -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf *.adoc
+        working-directory: ${{env.working-directory}}
+
+      - name: Generate Markdown documents
+        run: |
+          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/markdown *.adoc
+          cd $GITHUB_WORKSPACE/${{env.output-directory}}/markdown
+          for f in *.xml; do pandoc --from docbook --to gfm --wrap=none "$f" -s -o "${f%.xml}.md"; done
+        working-directory: ${{env.working-directory}}
+
+      - name: Generate MS Word documents
+        run: |
+          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/word *.adoc
+          cd $GITHUB_WORKSPACE/${{env.output-directory}}/word
+          for f in *.xml; do pandoc --from docbook --to docx "$f" -s -o "${f%.xml}.docx"; done
+        working-directory: ${{env.working-directory}}
+
+      - name: Publish HTML documents artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-html
+          path: |
+            ${{env.output-directory}}/html
+            !${{env.output-directory}}/html/**/.asciidoctor
+            !${{env.output-directory}}/html/**/vendor
+          if-no-files-found: error
+
+      - name: Publish PDF documents artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-pdf
+          path: |
+            ${{env.output-directory}}/pdf/**/*.pdf
+            !${{env.output-directory}}/pdf/**/.asciidoctor
+            !${{env.output-directory}}/pdf/**/vendor
+          if-no-files-found: error
+
+      - name: Publish Markdown documents artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-md
+          path: |
+            ${{env.output-directory}}/markdown
+            !${{env.output-directory}}/markdown/**/*.xml
+            !${{env.output-directory}}/markdown/**/.asciidoctor
+            !${{env.output-directory}}/markdown/**/vendor
+          if-no-files-found: error
+
+      - name: Publish MS Word documents artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-word
+          path: ${{env.output-directory}}/word/**/*.docx
+          if-no-files-found: error
+
+      - name: Publish to GitHub pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{env.output-directory}}/html
+          commit_message: ${{ env.commit-message }}
+
+      - name: Checkout Wiki code
+        uses: actions/checkout@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          repository: ${{github.repository}}.wiki
+          path: wiki
+
+      - name: Push to Wiki
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git rm -r *
+          cp -a ../${{env.output-directory}}/markdown/. ./
+          rm -rf vendor .asciidoctor
+          rm -f *.xml
+          mv index.md Home.md
+          git add .
+          git diff-index --quiet HEAD || git commit -m "${{ env.commit-message }}" && git push
+        working-directory: wiki
