@@ -69,14 +69,20 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: documentation-html
-          path: ${{env.output-directory}}/html
+          path: |
+            ${{env.output-directory}}/html
+            !${{env.output-directory}}/html/**/.asciidoctor
+            !${{env.output-directory}}/html/**/vendor
           if-no-files-found: error
 
       - name: Publish PDF documents artifact
         uses: actions/upload-artifact@v3
         with:
           name: documentation-pdf
-          path: ${{env.output-directory}}/pdf
+          path: |
+            ${{env.output-directory}}/pdf/**/*.pdf
+            !${{env.output-directory}}/pdf/**/.asciidoctor
+            !${{env.output-directory}}/pdf/**/vendor
           if-no-files-found: error
 
       - name: Publish MS Word documents artifact
@@ -103,6 +109,9 @@ jobs:
       - name: Push to Wiki
         run: |
           cp -r ${{env.output-directory}}/markdown ./wiki
+          cd ./wiki
+          rm -rf vendor .asciidoctor
+          rm -f *.xml
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
