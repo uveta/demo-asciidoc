@@ -119,5 +119,6 @@ jobs:
           cp -a ../${{env.output-directory}}/markdown/. ./
           rm -rf vendor .asciidoctor
           rm -f *.xml
+          mv index.md Home.md
           git add .
           git diff-index --quiet HEAD || git commit -m "${{ env.commit-message }}" && git push
