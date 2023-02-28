@@ -9,6 +9,44 @@ Wolpertingers.
 
 Wolpertingers are {url-wolpertinger}[ravenous beasts].
 
+[plantuml, target=diagram-c4-context, format=svg]
+....
+@startuml "enterprise"
+' convert it with additional command line argument -DRELATIVE_INCLUDE="./.." to use locally
+!if %variable_exists("RELATIVE_INCLUDE")
+  !include %get_variable_value("RELATIVE_INCLUDE")/C4_Context.puml
+!else
+  !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!endif
+
+LAYOUT_TOP_DOWN()
+'LAYOUT_AS_SKETCH()
+LAYOUT_WITH_LEGEND()
+
+Person(customer, "Customer", "A customer of Widgets Limited.")
+
+Enterprise_Boundary(c0, "Widgets Limited") {
+    Person(csa, "Customer Service Agent", "Deals with customer enquiries.")
+    System(ecommerce, "E-commerce System", "Allows customers to buy widgts online via the widgets.com website.")
+    System(fulfilment, "Fulfilment System", "Responsible for processing and shipping of customer orders.")
+}
+
+System(taxamo, "Taxamo", "Calculates local tax (for EU B2B customers) and acts as a front-end for Braintree Payments.")
+System(braintree, "Braintree Payments", "Processes credit card payments on behalf of Widgets Limited.")
+System(post, "Jersey Post", "Calculates worldwide shipping costs for packages.")
+Rel_R(customer, csa, "Asks questions to", "Telephone")
+Rel_R(customer, ecommerce, "Places orders for widgets using")
+Rel(csa, ecommerce, "Looks up order information using")
+Rel_R(ecommerce, fulfilment, "Sends order information to")
+Rel_D(fulfilment, post, "Gets shipping charges from")
+Rel_D(ecommerce, taxamo, "Delegates credit card processing to")
+Rel_L(taxamo, braintree, "Uses for credit card processing")
+Lay_D(customer, braintree)
+
+@enduml
+
+....
+
 [plantuml, target=diagram-c4-container, format=svg]
 ....
 @startuml
@@ -48,5 +86,37 @@ Rel_Back(email_system, backend_api, "Sends e-mails using", "sync, SMTP")
 Rel_Neighbor(backend_api, banking_system, "Uses", "sync/async, XML/HTTPS", $tags="sync/async")
 
 SHOW_LEGEND()
+@enduml
+....
+
+[plantuml, target=diagram-c4-deployment, format=svg]
+....
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+
+' default header Property, Value
+AddProperty("Name", "Flash")
+AddProperty("Organization", "Zootopia")
+AddProperty("Tool", "Internet Explorer 7.0")
+Person(personAlias, "Label", "Optional Description (with default property header)")
+
+SetPropertyHeader("Property","Value", "Description")
+AddProperty("Prop1", "Value1", "Details1")
+AddProperty("Prop2", "Value2", "Details2")
+Deployment_Node_L(nodeAlias, "Label", "Optional Type", "Optional Description (with custom property header)") {
+
+  WithoutPropertyHeader()
+  AddProperty("PropC1", "ValueC1")
+  AddProperty("PropC2", "ValueC2")
+  Container(containerAlias, "Label", "Technology", "Optional Description (without property header)")
+}
+
+System(systemAlias, "Label", "Optional Description (without properties)")
+
+' starting with v.2.5.0 relationships support properties too
+WithoutPropertyHeader()
+AddProperty("PropC1", "ValueC1")
+AddProperty("PropC2", "ValueC2")
+Rel(personAlias, containerAlias, "Label", "Optional Technology", "Optional Description")
 @enduml
 ....
