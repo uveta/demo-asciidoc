@@ -112,11 +112,12 @@ jobs:
 
       - name: Push to Wiki
         run: |
-          cp -a ${{env.output-directory}}/markdown/. ./wiki
           cd ./wiki
-          rm -rf vendor .asciidoctor
-          rm -f *.xml
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git rm -r *
+          cp -a ./${{env.output-directory}}/markdown/. ./                    
+          rm -rf vendor .asciidoctor
+          rm -f *.xml          
           git add .
           git diff-index --quiet HEAD || git commit -m "${{ env.commit-message }}" && git push
