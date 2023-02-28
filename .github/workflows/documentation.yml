@@ -19,6 +19,7 @@ jobs:
     env:
       working-directory: ./doc
       output-directory: ./output
+      commit-message: ${{ github.event.head_commit.message }}
     permissions:
       contents: write
     concurrency:
@@ -27,6 +28,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Get head git commit message
+        id: get_head_commit_message
+        run: echo "::set-output name=commit-message::$(git show -s --format=%s)"
 
       - name: Setup Ruby 3.2
         uses: ruby/setup-ruby@v1
@@ -98,7 +102,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{env.output-directory}}/html
-          commit_message: ${{ github.event.head_commit.message }}
+          commit_message: ${{ env.commit-message }}
 
       - name: Checkout Wiki code
         uses: actions/checkout@v2
@@ -115,4 +119,4 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git diff-index --quiet HEAD || git commit -m "${{ github.event.head_commit.message }}" && git push
+          git diff-index --quiet HEAD || git commit -m "${{ env.commit-message }}" && git push
