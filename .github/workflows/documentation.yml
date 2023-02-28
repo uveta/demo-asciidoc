@@ -1,11 +1,15 @@
-name: Continuos Integration
+name: Documentation
 on:
   push:
     branches:
       - main
+    paths:
+      - doc/**
   pull_request:
     branches:
       - main
+    paths:
+      - doc/**
 
   workflow_dispatch:
 
@@ -13,16 +17,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      working-directory: ./src
+      working-directory: ./doc
       output-directory: ./output
     permissions:
       contents: write
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
-    defaults:
-      run:
-        shell: bash
-        working-directory: src
 
     steps:
       - name: Checkout
@@ -40,35 +40,41 @@ jobs:
           sudo apt-get install graphviz pandoc --no-install-recommends
           bundle exec asciidoctor --version
 
-      - name: Generate HTML document
+      - name: Generate HTML documents
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}}/html *.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}}/html ${{env.working-directory}}/*.adoc
 
-      - name: Generate PDF document
+      - name: Generate PDF documents
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -r asciidoctor-pdf -b pdf -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf *.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -r asciidoctor-pdf -b pdf -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf ${{env.working-directory}}/*.adoc
 
-      - name: Generate MS Word document
+      - name: Generate Markdown documents
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/word *.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/markdown ${{env.working-directory}}/*.adoc
+          cd $GITHUB_WORKSPACE/${{env.output-directory}}/markdown
+          for f in *.xml; do pandoc --from docbook --to gfm --wrap=none "$f" -s -o "${f%.xml}.md"; done
+
+      - name: Generate MS Word documents
+        run: |
+          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/word ${{env.working-directory}}/*.adoc
           cd $GITHUB_WORKSPACE/${{env.output-directory}}/word
           for f in *.xml; do pandoc --from docbook --to docx "$f" -s -o "${f%.xml}.docx"; done
 
-      - name: Publish HTML document artifact
+      - name: Publish HTML documents artifact
         uses: actions/upload-artifact@v3
         with:
           name: documentation-html
           path: ${{env.output-directory}}/html
           if-no-files-found: error
 
-      - name: Publish PDF document artifact
+      - name: Publish PDF documents artifact
         uses: actions/upload-artifact@v3
         with:
           name: documentation-pdf
           path: ${{env.output-directory}}/pdf
           if-no-files-found: error
 
-      - name: Publish MS Word document artifact
+      - name: Publish MS Word documents artifact
         uses: actions/upload-artifact@v3
         with:
           name: documentation-word
@@ -82,3 +88,19 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{env.output-directory}}/html
           commit_message: ${{ github.event.head_commit.message }}
+
+      - name: Checkout Wiki code
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.repository}}.wiki
+          path: wiki
+      - name: Push to Wiki
+        run: |
+          cd ${{env.output-directory}}/markdown
+          cp **/*.md ../../wiki
+          cp **/*.svg ../../wiki
+          cd ../../wiki
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git diff-index --quiet HEAD || git commit -m "Add changes" && git push
