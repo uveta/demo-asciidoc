@@ -39,26 +39,31 @@ jobs:
         run: |
           sudo apt-get install graphviz pandoc --no-install-recommends
           bundle exec asciidoctor --version
+        working-directory: ${{env.working-directory}}
 
       - name: Generate HTML documents
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}}/html ${{env.working-directory}}/*.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}}/html *.adoc
+        working-directory: ${{env.working-directory}}
 
       - name: Generate PDF documents
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -r asciidoctor-pdf -b pdf -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf ${{env.working-directory}}/*.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -r asciidoctor-pdf -b pdf -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf *.adoc
+        working-directory: ${{env.working-directory}}
 
       - name: Generate Markdown documents
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/markdown ${{env.working-directory}}/*.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/markdown *.adoc
           cd $GITHUB_WORKSPACE/${{env.output-directory}}/markdown
           for f in *.xml; do pandoc --from docbook --to gfm --wrap=none "$f" -s -o "${f%.xml}.md"; done
+        working-directory: ${{env.working-directory}}
 
       - name: Generate MS Word documents
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/word ${{env.working-directory}}/*.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/word *.adoc
           cd $GITHUB_WORKSPACE/${{env.output-directory}}/word
           for f in *.xml; do pandoc --from docbook --to docx "$f" -s -o "${f%.xml}.docx"; done
+        working-directory: ${{env.working-directory}}
 
       - name: Publish HTML documents artifact
         uses: actions/upload-artifact@v3
@@ -94,6 +99,7 @@ jobs:
         with:
           repository: ${{github.repository}}.wiki
           path: wiki
+
       - name: Push to Wiki
         run: |
           cd ${{env.output-directory}}/markdown
