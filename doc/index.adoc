@@ -1,13 +1,126 @@
+// Document Title
 = The Dangers of Wolpertingers
+// attribute
 :url-wolpertinger: https://en.wikipedia.org/wiki/Wolpertinger
+// set source code highlighter
+:source-highlighter: highlight.js
+// styling
+:stylesheet: styles.css
+:stylesdir: css
+// table of content
+:toc:
+
+== Syntax
+
+=== Paragraphs
 
 Don't worry about gumberoos or splintercats.
 Something far more fearsome plagues the days, nights, and inbetweens.
 Wolpertingers.
 
-== Origins
-
+// attribute substitution
 Wolpertingers are {url-wolpertinger}[ravenous beasts].
+
+// new paragraph
+Another https://www.google.com[url] example.
+
+=== Lists
+==== Unordered list
+* Unordered list
+** Nested list item
+*** Deeper nested list item
+
+==== Ordered list
+. Ordered list
+.. Level 2 list item
+... Level 3 list item
+
+==== Checklist
+. [*] Checklist
+. [x] also checked
+. [ ] not checked
+. normal list item
+
+=== Media
+==== Images
+....
+image::images/sunset.jpg[]
+....
+image::images/sunset.jpg[]
+
+==== Audio
+....
+audio::audio/ocean-waves.wav[]
+....
+
+==== Video
+....
+video::video/video-file.mp4[width=640,start=60,opts=autoplay]
+....
+
+=== Tables
+.Browsers
+[cols="2,2,5a"]
+|===
+|Firefox
+|Browser
+|Mozilla Firefox is an open source web browser.
+
+It's designed for:
+
+* standards compliance
+* performance
+* portability
+
+https://getfirefox.com[Get Firefox]!
+|===
+
+=== Source code
+.Minimal C# web host setup
+[source,csharp]
+----
+var builder = WebApplication.CreateBuilder(args);
+// Add services to the container.
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+var app = builder.Build();
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
+----
+
+=== Breaks
+
+*horizontal*
+
+'''
+
+*break*
+
+*page*
+
+<<<
+
+*break*
+
+=== CSS Styling
+
+[#goals.important]
+* Goal 1
+* Goal 2
+
+=== Other
+* Footnotes
+* Markdown syntax compatibility
 
 == C4 Diagrams
 
@@ -16,12 +129,7 @@ Wolpertingers are {url-wolpertinger}[ravenous beasts].
 [plantuml, target=diagram-c4-context, format=svg]
 ....
 @startuml "enterprise"
-' convert it with additional command line argument -DRELATIVE_INCLUDE="./.." to use locally
-!if %variable_exists("RELATIVE_INCLUDE")
-  !include %get_variable_value("RELATIVE_INCLUDE")/C4_Context.puml
-!else
-  !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
-!endif
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
 LAYOUT_TOP_DOWN()
 'LAYOUT_AS_SKETCH()
