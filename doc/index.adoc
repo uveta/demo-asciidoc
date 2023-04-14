@@ -2,13 +2,16 @@
 = The Dangers of Wolpertingers
 // attribute
 :url-wolpertinger: https://en.wikipedia.org/wiki/Wolpertinger
-// set source code highlighter
+// table of content
+:toc:
+
+// source code highlighter
 :source-highlighter: highlight.js
+// images
+:imagesdir: images
 // styling
 :stylesheet: style.css
 :stylesdir: css
-// table of content
-:toc:
 
 == Syntax
 
@@ -44,9 +47,9 @@ Another https://www.google.com[url] example.
 === Media
 ==== Images
 ....
-image::images/sunset.jpg[]
+image::sunset.jpg[]
 ....
-image::images/sunset.jpg[]
+image::sunset.jpg[]
 
 ==== Audio
 ....

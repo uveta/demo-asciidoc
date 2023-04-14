@@ -61,7 +61,7 @@ jobs:
       - name: Generate Markdown documents
         run: |
           bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/markdown *.adoc
-          cp -R css images $GITHUB_WORKSPACE/${{env.output-directory}}/markdown
+          cp -R images $GITHUB_WORKSPACE/${{env.output-directory}}/markdown
           cd $GITHUB_WORKSPACE/${{env.output-directory}}/markdown
           for f in *.xml; do pandoc --from docbook --to gfm --wrap=none "$f" -s -o "${f%.xml}.md"; done
         working-directory: ${{env.working-directory}}
@@ -69,7 +69,7 @@ jobs:
       - name: Generate MS Word documents
         run: |
           bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/word *.adoc
-          cp -R css images $GITHUB_WORKSPACE/${{env.output-directory}}/word
+          cp -R images $GITHUB_WORKSPACE/${{env.output-directory}}/word
           cd $GITHUB_WORKSPACE/${{env.output-directory}}/word
           for f in *.xml; do pandoc --from docbook --to docx "$f" -s -o "${f%.xml}.docx"; done
         working-directory: ${{env.working-directory}}
