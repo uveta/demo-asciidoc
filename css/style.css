@@ -1,0 +1,30 @@
+body {
+  font-family: "Times New Roman";
+  color: green !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #333;
+    color: white;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background: #ddd;
+    color: black;
+  }
+}
+
+p code {
+  color: darkblue;
+}
+
+#goals {
+  background-color: yellow;
+}
+
+.important {
+  color: red;
+}
