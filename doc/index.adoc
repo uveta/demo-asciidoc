@@ -5,7 +5,7 @@
 // set source code highlighter
 :source-highlighter: highlight.js
 // styling
-:stylesheet: styles.css
+:stylesheet: style.css
 :stylesdir: css
 // table of content
 :toc:
