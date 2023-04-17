@@ -10,8 +10,10 @@
 // images
 :imagesdir: images
 // styling
+:linkcss:
 :stylesheet: style.css
 :stylesdir: css
+:!copycss:
 
 == Syntax
 
