@@ -11,9 +11,9 @@ Demo using AsciiDoc and Asciidoctor to build rich technical documentation. Inclu
 
 ## Provisioning GitHub Wiki
 
-Some manual steps, not covered by YAML pipeline, are required to provision and upload content to GitHub Wiki.
+Some manual steps, not covered by workflow, are required to provision and upload content to GitHub Wiki.
 
-Before running pipeline:
+Before running workflow:
 
 - Make sure Wiki is enabled in your repository, by going to repository settings.
 
