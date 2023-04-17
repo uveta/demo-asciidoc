@@ -2,6 +2,8 @@
 = The Dangers of Wolpertingers
 // attribute
 :url-wolpertinger: https://en.wikipedia.org/wiki/Wolpertinger
+// table of content
+:toc:
 // source code highlighter
 :source-highlighter: highlight.js
 // images
@@ -11,8 +13,6 @@
 :stylesdir: css
 :linkcss:
 :!copycss:
-// table of content
-:toc:
 
 == Syntax
 
