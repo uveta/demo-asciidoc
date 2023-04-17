@@ -4,6 +4,8 @@
 :url-wolpertinger: https://en.wikipedia.org/wiki/Wolpertinger
 // source code highlighter
 :source-highlighter: highlight.js
+// images
+:imagesdir: images
 // styling
 :stylesheet: style.css
 :stylesdir: css
