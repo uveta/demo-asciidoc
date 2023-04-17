@@ -4,11 +4,10 @@
 :url-wolpertinger: https://en.wikipedia.org/wiki/Wolpertinger
 // table of content
 :toc:
-
 // source code highlighter
 :source-highlighter: highlight.js
 // images
-// :imagesdir: images
+:imagesdir: images
 // styling
 :linkcss:
 :stylesheet: style.css
@@ -41,10 +40,10 @@ Another https://www.google.com[url] example.
 ... Level 3 list item
 
 ==== Checklist
-* [*] Checklist
-* [x] also checked
-* [ ] not checked
-* normal list item
+. [*] Checklist
+. [x] also checked
+. [ ] not checked
+. normal list item
 
 === Media
 ==== Images
