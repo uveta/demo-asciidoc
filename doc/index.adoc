@@ -39,10 +39,10 @@ Another https://www.google.com[url] example.
 ... Level 3 list item
 
 ==== Checklist
-. [*] Checklist
-. [x] also checked
-. [ ] not checked
-. normal list item
+* [*] Checklist
+* [x] also checked
+* [ ] not checked
+* normal list item
 
 === Media
 ==== Images
