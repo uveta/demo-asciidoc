@@ -2,19 +2,18 @@
 = The Dangers of Wolpertingers
 // attribute
 :url-wolpertinger: https://en.wikipedia.org/wiki/Wolpertinger
+// table of content
+:toc:
 
 // source code highlighter
 :source-highlighter: highlight.js
 // images
-:imagesdir: images
+// :imagesdir: images
 // styling
 :linkcss:
 :stylesheet: style.css
 :stylesdir: css
 :!copycss:
-
-// table of content
-:toc:
 
 == Syntax
 
