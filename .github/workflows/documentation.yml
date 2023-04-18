@@ -73,7 +73,7 @@ jobs:
           bundle exec asciidoctor -r asciidoctor-diagram -b docbook -a source-highlighter=rouge -D $GITHUB_WORKSPACE/${{env.output-directory}}/word *.adoc
           cp -R images $GITHUB_WORKSPACE/${{env.output-directory}}/word
           cd $GITHUB_WORKSPACE/${{env.output-directory}}/word
-          for f in *.xml; do pandoc --from docbook --to docx "$f" --standalone --table-of-contents --output="${f%.xml}.docx"; done
+          for f in *.xml; do pandoc --from docbook --to docx "$f" --standalone --output="${f%.xml}.docx"; done
         working-directory: ${{env.working-directory}}
 
       - name: Publish HTML documents artifact
