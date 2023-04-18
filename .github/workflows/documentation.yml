@@ -5,11 +5,13 @@ on:
       - main
     paths:
       - doc/**
+      - .github/workflows/documentation.yml
   pull_request:
     branches:
       - main
     paths:
       - doc/**
+      - .github/workflows/documentation.yml
 
   workflow_dispatch:
 
