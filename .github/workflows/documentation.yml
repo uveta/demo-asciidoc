@@ -51,7 +51,7 @@ jobs:
 
       - name: Generate HTML documents
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -D $GITHUB_WORKSPACE/${{env.output-directory}}/html *.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -a linkcss -a copycss! -D $GITHUB_WORKSPACE/${{env.output-directory}}/html *.adoc
           cp -R css images $GITHUB_WORKSPACE/${{env.output-directory}}/html
         working-directory: ${{env.working-directory}}
 
