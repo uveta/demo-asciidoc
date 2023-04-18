@@ -55,7 +55,7 @@ jobs:
 
       - name: Generate PDF documents
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -r asciidoctor-pdf -b pdf -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf *.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -r asciidoctor-pdf -b pdf -a source-highlighter=rouge -D $GITHUB_WORKSPACE/${{env.output-directory}}/pdf *.adoc
         working-directory: ${{env.working-directory}}
 
       - name: Generate Markdown documents
@@ -68,7 +68,7 @@ jobs:
 
       - name: Generate MS Word documents
         run: |
-          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/word *.adoc
+          bundle exec asciidoctor -r asciidoctor-diagram -b docbook -a source-highlighter=rouge -D $GITHUB_WORKSPACE/${{env.output-directory}}/word *.adoc
           cp -R images $GITHUB_WORKSPACE/${{env.output-directory}}/word
           cd $GITHUB_WORKSPACE/${{env.output-directory}}/word
           for f in *.xml; do pandoc --from docbook --to docx "$f" -s -o "${f%.xml}.docx"; done
