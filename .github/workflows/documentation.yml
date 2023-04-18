@@ -65,7 +65,7 @@ jobs:
           bundle exec asciidoctor -r asciidoctor-diagram -b docbook -D $GITHUB_WORKSPACE/${{env.output-directory}}/markdown *.adoc
           cp -R images $GITHUB_WORKSPACE/${{env.output-directory}}/markdown
           cd $GITHUB_WORKSPACE/${{env.output-directory}}/markdown
-          for f in *.xml; do pandoc --from docbook --to gfm --wrap=none "$f" -s -o "${f%.xml}.md"; done
+          for f in *.xml; do pandoc --from docbook --to gfm --wrap=none "$f" --standalone --output="${f%.xml}.md"; done
         working-directory: ${{env.working-directory}}
 
       - name: Generate MS Word documents
@@ -73,7 +73,7 @@ jobs:
           bundle exec asciidoctor -r asciidoctor-diagram -b docbook -a source-highlighter=rouge -D $GITHUB_WORKSPACE/${{env.output-directory}}/word *.adoc
           cp -R images $GITHUB_WORKSPACE/${{env.output-directory}}/word
           cd $GITHUB_WORKSPACE/${{env.output-directory}}/word
-          for f in *.xml; do pandoc --from docbook --to docx "$f" -s -o "${f%.xml}.docx"; done
+          for f in *.xml; do pandoc --from docbook --to docx "$f" --standalone --table-of-contents --output="${f%.xml}.docx"; done
         working-directory: ${{env.working-directory}}
 
       - name: Publish HTML documents artifact
